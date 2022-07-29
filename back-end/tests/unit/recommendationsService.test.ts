@@ -135,7 +135,7 @@ describe("get", () => {
   });
 
   it("should get random recommendation gt", async () => {
-    const fixedBelow70 = 0.5;
+    const fixedBelow70 = 0.4;
     jest
       .spyOn(recommendationRepository, "findAll")
       .mockResolvedValueOnce([recommendation]);
