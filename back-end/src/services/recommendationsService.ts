@@ -1,5 +1,5 @@
 import { Recommendation } from "@prisma/client";
-import { recommendationRepository } from "../repositories/recommendationRepository.js";
+import recommendationRepository from "../repositories/recommendationRepository.js";
 import { conflictError, notFoundError } from "../utils/errorUtils.js";
 
 export type CreateRecommendationData = Omit<Recommendation, "id" | "score">;
@@ -82,7 +82,7 @@ function getScoreFilter(random: number) {
   return "lte";
 }
 
-export const recommendationService = {
+const recommendationService = {
   insert,
   upvote,
   downvote,
@@ -91,3 +91,5 @@ export const recommendationService = {
   getById: getByIdOrFail,
   getTop,
 };
+
+export default recommendationService;
