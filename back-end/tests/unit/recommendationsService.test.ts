@@ -56,9 +56,6 @@ describe("upvote", () => {
 
   it("should not upvote a recommendation that doesnt exist", async () => {
     jest.spyOn(recommendationRepository, "find").mockResolvedValueOnce(null);
-    jest
-      .spyOn(recommendationRepository, "updateScore")
-      .mockResolvedValueOnce(null);
 
     expect(recommendationService.upvote(recommendation.id)).rejects.toEqual(
       notFoundError()
@@ -66,18 +63,17 @@ describe("upvote", () => {
   });
 });
 
-// TODO: tirar a duvida de pq que o primeiro updatedRecommendation não roda assincronamente
 describe("downvote", () => {
   it("should remove a recommendation after score  < -5", async () => {
     jest
       .spyOn(recommendationRepository, "find")
       .mockResolvedValueOnce({ ...recommendation });
     jest
-      .spyOn(recommendationRepository, "remove")
-      .mockImplementationOnce((): any => {});
-    jest
       .spyOn(recommendationRepository, "updateScore")
       .mockResolvedValueOnce({ score: -6 } as any);
+    jest
+      .spyOn(recommendationRepository, "remove")
+      .mockImplementationOnce((): any => {});
 
     await recommendationService.downvote(1);
 
@@ -85,15 +81,16 @@ describe("downvote", () => {
   });
 
   it("should not remove a recommendation after downvote of score > -5", async () => {
+    // TODO: nesta função, o teste não passa por que ele não reconhece o mock que está neste teste, e sim o mock da função "updateScore" do teste anterior a este, não sei por que, mas o jest não está lidando de forma assincrona neste caso específico 
     jest
       .spyOn(recommendationRepository, "find")
       .mockResolvedValueOnce({ ...recommendation });
     jest
-      .spyOn(recommendationRepository, "remove")
-      .mockImplementationOnce((): any => {});
-    jest
       .spyOn(recommendationRepository, "updateScore")
       .mockResolvedValueOnce({ score: 5 } as any);
+    jest
+      .spyOn(recommendationRepository, "remove")
+      .mockImplementationOnce((): any => {});
 
     await recommendationService.downvote(1);
 

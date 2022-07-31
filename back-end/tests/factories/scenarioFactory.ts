@@ -6,12 +6,6 @@ export async function createScenarioWithOneRecommendation() {
   return recommendation;
 }
 
-export async function createScenarioWithOneWrongRecommendation() {
-  const recommendation =
-    await recommendationFactory.createWrongRecommendation();
-  return recommendation;
-}
-
 export async function createScenarioWithOTwoRecommendations() {
   const recommendation1 = await recommendationFactory.createRecommendation();
   const recommendation2 = await recommendationFactory.createRecommendation();

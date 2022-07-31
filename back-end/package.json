@@ -9,7 +9,7 @@
   },
   "scripts": {
     "dev": "nodemon src/server.ts",
-    "test:integration": "dotenv -e .env.test prisma migrate dev && NODE_OPTIONS=--experimental-vm-modules dotenv -e .env.test jest -- -i --runInBand --testPathPattern=tests/integration",
+    "test:integration": "dotenv -e .env.test prisma migrate dev && NODE_OPTIONS=--experimental-vm-modules dotenv -e .env.test jest -- -i --runInBand --coverage --testPathPattern=tests/integration",
     "test:unit": "dotenv -e .env.test cross-env NODE_OPTIONS=--experimental-vm-modules jest -- -i --runInBand --coverage --testPathPattern=tests/unit",
     "build": "npx tsc",
     "studio": "npx prisma studio",
