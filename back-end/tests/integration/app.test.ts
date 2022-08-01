@@ -6,6 +6,7 @@ import app from "../../src/app.js";
 import { prisma } from "../../src/database.js";
 import recommendationRepository from "../../src/repositories/recommendationRepository.js";
 import { jest } from "@jest/globals";
+import bodyParser from "body-parser";
 
 const agent = supertest(app);
 
@@ -98,12 +99,56 @@ describe("upvoting and downvoting test suite", () => {
 });
 
 describe("getting recommendations test suite", () => {
-  it.todo("should get all recommendations");
-  it.todo("should get a specific recommendation");
-  it.todo("should get a random recommendation");
-  it.todo(
-    "should get a amount number of recommendations ordered by top scores"
-  );
+  it("should get all recommendations", async () => {
+    await recommendationFactory.createXRecommendations(20);
+    const result: any = await agent.get("/recommendations");
+    expect(result._body.length).toEqual(10);
+  });
+  it("should get a specific recommendation", async () => {
+    const recommendation =
+      await recommendationFactory.createAndGetRecommendation();
+    const result: any = await agent.get(
+      `/recommendations/${recommendation.id}`
+    );
+    expect(result._body).toEqual(recommendation);
+  });
+  it("should get a random recommendation 70%", async () => {
+    const FIXED_RANDOM = 0.2;
+    jest.spyOn(Math, "random").mockReturnValueOnce(FIXED_RANDOM);
+    await recommendationFactory.updateXScores(20, 5);
+    await recommendationFactory.updateXScores(1, 20);
+
+    const result: any = await agent.get("/recommendations/random");
+    expect(result._body.score).toBeGreaterThan(10);
+  });
+  it("should get a random recommendation 30%", async () => {
+    const FIXED_RANDOM = 0.8;
+    jest.spyOn(Math, "random").mockReturnValueOnce(FIXED_RANDOM);
+    await recommendationFactory.updateXScores(40, 20);
+    await recommendationFactory.updateXScores(1, 5);
+
+    const result: any = await agent.get("/recommendations/random");
+    expect(result._body.score).toBeLessThanOrEqual(10);
+  });
+  it("should not get a random recommendation if there are no recommendations", async () => {
+    const FIXED_RANDOM = 0.75;
+    jest.spyOn(Math, "random").mockReturnValueOnce(FIXED_RANDOM);
+
+    const result: any = await agent.get("/recommendations/random");
+    expect(result.statusCode).toBe(404);
+  });
+  it("should get a amount number of recommendations ordered by top scores", async () => {
+    const TOP_SCORE = 30;
+    const MEDIUM_SCORE = 20;
+    const LOW_SCORE = 0;
+    await recommendationFactory.updateXScores(5, TOP_SCORE);
+    await recommendationFactory.updateXScores(5, MEDIUM_SCORE);
+    await recommendationFactory.updateXScores(5, LOW_SCORE);
+
+    const AMOUNT = 10;
+    const result = await agent.get("/recommendations/top/" + AMOUNT);
+    expect(result.body.length).toBe(AMOUNT);
+  });
 });
 
 afterAll(async () => {
