@@ -68,7 +68,7 @@ $ npm run test:unit
 
 ### Comming up soon!
 
-- General routes: (no auth needed on header's request)
+## General routes: (no auth needed on header's request)
 
 ```
 - POST /recommendations
